@@ -72,6 +72,10 @@ const colores = ['red', 'green', 'blue', 'orange', '#7D3C98', 'black'];
  * Almacena la cantidad de segundos que ha trabajado la sección crítica.
  */
 let seconds = 0;
+/**
+ * Almacena el ultimo tiempo de llegada
+ */
+ let lastTimeLlegada = 0;
 
 /**
  * Función que setea la sección crítica a estado ocupado.
@@ -94,9 +98,10 @@ const free = (): void => {
  */
 const change = (): void => {
     hayProcesos = false;
+    ejecutar = false;
     free();
     if (1 <= procesos.length) {
-        setTimeout(() => { hayProcesos = true }, 1000);
+        setTimeout(() => { hayProcesos = true; ejecutar = true; }, 1000);
     }
 }
 
@@ -231,20 +236,23 @@ const enviarProceso = (): void => {
         return;
     }
 
-    if (lastProceso && proceso.tiempo_llegada < lastProceso.tiempo_llegada) {
-        alert(`El tiempo del proceso ${proceso.nombre} debe ser mayor o igual a ${lastProceso.tiempo_llegada}`);
+    if (proceso.tiempo_llegada < lastTimeLlegada) {
+        alert(`El tiempo del proceso ${proceso.nombre} debe ser mayor o igual a ${lastTimeLlegada}`);
         return;
     }
 
+    lastTimeLlegada = proceso.tiempo_llegada;
     procesos.push(proceso);
     txtProceso.value = ''; txtLlegada.value = ''; txtRafaga.value = '';
-    ejecutar = false; hayProcesos = true;
+    hayProcesos = true;
 }
 
 /**
  * Función que se encarga de ejecutar los procesos que están actualmente en la cola de espera.
  */
 const ejecutarProceso = (): void => {
+    if (!ejecutar)
+        ordenarProcesos();
     ejecutar = true;
 }
 

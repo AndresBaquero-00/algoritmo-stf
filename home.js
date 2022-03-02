@@ -51,6 +51,10 @@ var colores = ['red', 'green', 'blue', 'orange', '#7D3C98', 'black'];
  */
 var seconds = 0;
 /**
+ * Almacena el ultimo tiempo de llegada
+ */
+var lastTimeLlegada = 0;
+/**
  * Función que setea la sección crítica a estado ocupado.
  */
 var busy = function () {
@@ -69,9 +73,10 @@ var free = function () {
  */
 var change = function () {
     hayProcesos = false;
+    ejecutar = false;
     free();
     if (1 <= procesos.length) {
-        setTimeout(function () { hayProcesos = true; }, 1000);
+        setTimeout(function () { hayProcesos = true; ejecutar = true; }, 1000);
     }
 };
 /**
@@ -186,21 +191,23 @@ var enviarProceso = function () {
         alert('No se admiten campos vacíos. Intente nuevamente.');
         return;
     }
-    if (lastProceso && proceso.tiempo_llegada < lastProceso.tiempo_llegada) {
-        alert("El tiempo del proceso ".concat(proceso.nombre, " debe ser mayor o igual a ").concat(lastProceso.tiempo_llegada));
+    if (proceso.tiempo_llegada < lastTimeLlegada) {
+        alert("El tiempo del proceso ".concat(proceso.nombre, " debe ser mayor o igual a ").concat(lastTimeLlegada));
         return;
     }
+    lastTimeLlegada = proceso.tiempo_llegada;
     procesos.push(proceso);
     txtProceso.value = '';
     txtLlegada.value = '';
     txtRafaga.value = '';
-    ejecutar = false;
     hayProcesos = true;
 };
 /**
  * Función que se encarga de ejecutar los procesos que están actualmente en la cola de espera.
  */
 var ejecutarProceso = function () {
+    if (!ejecutar)
+        ordenarProcesos();
     ejecutar = true;
 };
 /**
