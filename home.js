@@ -283,6 +283,7 @@ var handlerColaBloqueo = function () {
             procesos.push(proceso_reanudado);
             alert("El proceso ".concat(proceso_bloqueado.nombre, " ha sido desbloqueado."));
             hayProcesos = true;
+            ejecutarProceso();
             // 
         }
     }

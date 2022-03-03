@@ -342,7 +342,7 @@ const handlerColaBloqueo = (): void => {
 
             alert(`El proceso ${ proceso_bloqueado.nombre } ha sido desbloqueado.`);
             hayProcesos = true;
-
+            ejecutarProceso();
             // 
         }
     }
